@@ -43,8 +43,7 @@ Temp <- outer(0:4,0:4,FUN = "+")
 
 #Matrices q5
 matrix_a <- outer(0:4,0:4, FUN = "+")%%5
-matrix_b <- outer(0:4,0:4, FUN = "+")%%10
-
-
+matrix_b <- outer(0:9,0:9, FUN = "+")%%10
+matrix_c <- outer(0:8,9:1, FUN = "+")%%9
 
 
