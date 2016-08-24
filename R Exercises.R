@@ -1,4 +1,4 @@
-#q6
+#Vectors q6
 set.seed(50)
 xVec <- sample(0:999, 250, replace = T)
 yVec <- sample(0:999, 250, replace = T)
@@ -26,6 +26,20 @@ for (i in 1:249) {
   part_d[i] <- (exp(-xVec[i+1]))/(xVec[i]+10)
 }
 part_d
+
+
+#Matrices q1
+A <- matrix(c(1,5,-2,1,2,-1,3,6,-3),3,3)
+A %*% A %*% A
+
+A[,3] <- A[,1]+A[,2]
+
+#Matrices q4
+Temp <- outer(0:4,0:4,FUN = "+")
+
+#Matrices q5
+
+
 
 
 
