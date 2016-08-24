@@ -34,12 +34,16 @@ A %*% A %*% A
 
 A[,3] <- A[,1]+A[,2]
 
+#Matrices q3
+matE <- matrix(rep(0,36),6,6)
+matE[ abs(col(matE)-row(matE))==1 ] <- 1
+
 #Matrices q4
 Temp <- outer(0:4,0:4,FUN = "+")
 
 #Matrices q5
-
-
+matrix_a <- outer(0:4,0:4, FUN = "+")%%5
+matrix_b <- outer(0:4,0:4, FUN = "+")%%10
 
 
 
