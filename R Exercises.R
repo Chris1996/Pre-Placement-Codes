@@ -47,3 +47,26 @@ matrix_b <- outer(0:9,0:9, FUN = "+")%%10
 matrix_c <- outer(0:8,9:1, FUN = "+")%%9
 
 
+#simple functions q1
+tmpFn1 <- function(xVec) {
+  answer <- rep(0,length(xVec))
+  for (i in 1:length(xVec)) {
+    answer[i] <- xVec[i]^i
+  }
+  answer
+}
+
+tmpFn2 <- function(xVec) {
+  answer2 <- rep(0,length(xVec))
+  for (i in 1:length(xVec)) {
+    answer2[i] <- (xVec[i]^i)/i
+  }
+  answer2
+}
+
+tmpFn3 <- function(x,n) {
+  sum(1,tmpFn2(rep(x,n)))
+}
+
+
+
