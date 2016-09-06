@@ -3,10 +3,10 @@ library(ggplot2)
 
 Heathrow <- getWeatherForDate("EGLL", "2014-01-01", end_date="2016-08-30",opt_all_columns = T, opt_detailed = T)
 Heathrow2 <- Heathrow[,c(1,3,5,6,9,12,14)] #remove columns irrelevant to problem
+write.table(Heathrow2, file = "Processed/rowDataH.tsv", sep = "\t", row.names = F)
 Dundee <- getWeatherForDate("EGPN", "2014-01-01", end_date="2016-08-30",opt_all_columns = T, opt_detailed = T)
 Dundee2 <- Dundee[,c(1,3,5,6,9,12,14)] #remove columns irrelevant to problem
-
-
+write.table(Dundee2, file = "Processed/rowDataD.tsv", sep = "\t", row.names = F)
 
 HeathrowTemp <- Heathrow2[,1:2] #isolate time and temperature columns
 HeathrowTemp <- HeathrowTemp[!HeathrowTemp[,2]==-9999,] #remove temperature values at -9999
