@@ -3,13 +3,13 @@ library(ggplot2)
 library(data.table)
 library(lubridate)
 
-Heathrow <- getWeatherForDate("EGLL", "2014-01-01", end_date="2016-08-30",opt_all_columns = T, opt_detailed = T)
-Heathrow2 <- Heathrow[c("Time", "TemperatureC", "Humidity", "Sea_Level_PressurehPa", "Wind_SpeedKm_h", "Events", "WindDirDegrees")]
-write.table(Heathrow2, file = "Processed/rowDataH.tsv", sep = "\t", row.names = F)
+#Heathrow <- getWeatherForDate("EGLL", "2014-01-01", end_date="2016-08-30",opt_all_columns = T, opt_detailed = T)
+#Heathrow2 <- Heathrow[c("Time", "TemperatureC", "Humidity", "Sea_Level_PressurehPa", "Wind_SpeedKm_h", "Events", "WindDirDegrees")]
+#write.table(Heathrow2, file = "Processed/rowDataH.tsv", sep = "\t", row.names = F)
 
-Dundee <- getWeatherForDate("EGPN", "2014-01-01", end_date="2016-08-30",opt_all_columns = T, opt_detailed = T)
-Dundee2 <- Dundee[c("Time", "TemperatureC", "Humidity", "Sea_Level_PressurehPa", "Wind_SpeedKm_h", "Events", "WindDirDegrees")]
-write.table(Dundee2, file = "Processed/rowDataD.tsv", sep = "\t", row.names = F)
+#Dundee <- getWeatherForDate("EGPN", "2014-01-01", end_date="2016-08-30",opt_all_columns = T, opt_detailed = T)
+#Dundee2 <- Dundee[c("Time", "TemperatureC", "Humidity", "Sea_Level_PressurehPa", "Wind_SpeedKm_h", "Events", "WindDirDegrees")]
+#write.table(Dundee2, file = "Processed/rowDataD.tsv", sep = "\t", row.names = F)
 
 HeathrowRead <- read.table("Processed/rowDataH.tsv", sep="\t", header = T, stringsAsFactors = F)
 HeathrowRead$Time <- as.POSIXct(HeathrowRead$Time)
@@ -22,8 +22,8 @@ DundeeRead$Time <- as.POSIXct(DundeeRead$Time)
 HeathrowTemp <- HeathrowRead[c("Time", "TemperatureC")] #isolate time and temperature columns
 HeathrowTemp <- HeathrowTemp[!HeathrowTemp[,2]==-9999,] #remove temperature values at -9999
 HeathrowTemp$Date <- date(HeathrowTemp$Time)
-HeathrowTemp$Week <- week(HeathrowTemp$Time)
-HeathrowTemp$Month <- month(HeathrowTemp$Time)
+HeathrowTemp$Week <- week(HeathrowTemp$Time) #need to differentiate between years
+HeathrowTemp$Month <- month(HeathrowTemp$Time) #need to differentiate between years
 HeathrowDailyTempMeans <- aggregate(cbind("DailyTempMean" = TemperatureC) ~ Date, data = HeathrowTemp, FUN = mean)
 HeathrowDailyTempMedians <- aggregate(cbind("DailyTempMedian" = TemperatureC) ~ Date, data = HeathrowTemp, FUN = median)
 HeathrowWeeklyTempMeans <- aggregate(cbind("WeeklyTempMean" = TemperatureC) ~ Week, data = HeathrowTemp, FUN = mean)
@@ -218,4 +218,27 @@ DundeeDailyWindDirMeans <- aggregate(cbind("DailyWindDirMean" = WindDirDegrees) 
 DundeeDailyTempMeans2 <- DundeeDailyTempMeans[DundeeDailyTempMeans[,1] %in% DundeeDailyWindDirMeans[,1],]
 cor(x = DundeeDailyWindDirMeans[,2],y = DundeeDailyTempMeans2[,2])
 #returns [1] -0.1339723
+
+
+
+ggplot() +  #ggplot for heathrow/dundee daily pressure means
+  geom_point(data = HeathrowDailyPressureMeans, color = "blue",aes(Date,DailyPressureMean)) +
+  geom_point(data = DundeeDailyPressureMeans, color = "red",aes(Date,DailyPressureMean))
+#need to clean data!
+
+ggplot() +  #ggplot for heathrow/dundee daily humidity means
+  geom_point(data = HeathrowDailyHumidityMeans, color = "blue",aes(Date,DailyHumidityMean)) +
+  geom_point(data = DundeeDailyHumidityMeans, color = "red",aes(Date,DailyHumidityMean))
+#change x axis labels- just a blur at the moment
+
+ggplot() +  #ggplot for heathrow/dundee daily wind speed means
+  geom_point(data = HeathrowDailyWindSpeedMeans, color = "blue",aes(Date,DailyWindSpeedMean)) +
+  geom_point(data = DundeeDailyWindSpeedMeans, color = "red",aes(Date,DailyWindSpeedMean))
+#need to clean data!
+
+
+#Improvements:
+#   - use a function to save copy and pasting
+#   - na.rm is an arguement to some functions. Saves subsetting with !is.na
+#   - change labels on the x axis of the plots (yearly propably appropriate in this case)
 
