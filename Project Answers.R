@@ -19,8 +19,8 @@ DundeeRead <- read.table("Processed/rowDataD.tsv", sep="\t", header = T, strings
 DundeeRead$Time <- as.POSIXct(DundeeRead$Time)
 
 
-HeathrowTemp <- HeathrowRead[c("Time", "TemperatureC")] #isolate time and temperature columns
-HeathrowTemp <- HeathrowTemp[!HeathrowTemp[,2]==-9999,] #remove temperature values at -9999
+HeathrowTemp <- HeathrowRead[,c("Time", "TemperatureC")] #isolate time and temperature columns
+HeathrowTemp <- HeathrowTemp[!HeathrowTemp$TemperatureC == -9999,] #remove temperature values at -9999
 HeathrowTemp$Date <- date(HeathrowTemp$Time)
 HeathrowTemp$Week <- week(HeathrowTemp$Time) #need to differentiate between years
 HeathrowTemp$Month <- month(HeathrowTemp$Time) #need to differentiate between years
@@ -31,8 +31,8 @@ HeathrowWeeklyTempMedians <- aggregate(cbind("WeeklyTempMedian" = TemperatureC) 
 HeathrowMonthlyTempMeans <- aggregate(cbind("MonthlyTempMean" = TemperatureC) ~ Month, data = HeathrowTemp, FUN = mean)
 HeathrowMonthlyTempMedians <- aggregate(cbind("MonthlyTempMedian" = TemperatureC) ~ Month, data = HeathrowTemp, FUN = median)
 
-DundeeTemp <- DundeeRead[,1:2] #isolate time and temperature columns
-DundeeTemp <- DundeeTemp[!DundeeTemp[,2]==-9999,] #remove temperature values at -9999
+DundeeTemp <- DundeeRead[,c("Time", "TemperatureC")] #isolate time and temperature columns
+DundeeTemp <- DundeeTemp[!DundeeTemp$TemperatureC == -9999,] #remove temperature values at -9999
 DundeeTemp$Date <- date(DundeeTemp$Time)
 DundeeTemp$Week <- week(DundeeTemp$Time)
 DundeeTemp$Month <- month(DundeeTemp$Time)
@@ -69,136 +69,139 @@ ggplot() +  #ggplot for heathrow/dundee monthly temperature medians
 
 
 
-table(DundeeDailyTempMeans[,1] %in% HeathrowDailyTempMeans[,1])
+table(DundeeDailyTempMeans$Date %in% HeathrowDailyTempMeans$Date)
 #returns all true
-table(HeathrowDailyTempMeans[,1] %in% DundeeDailyTempMeans[,1])
+table(HeathrowDailyTempMeans$Date %in% DundeeDailyTempMeans$Date)
 #returns 7 false, the rest true
 
-HeathrowDailyTempMeans2 <- HeathrowDailyTempMeans[HeathrowDailyTempMeans[,1] %in% DundeeDailyTempMeans[,1],]
+HeathrowDailyTempMeans2 <- HeathrowDailyTempMeans[HeathrowDailyTempMeans$Date %in% DundeeDailyTempMeans$Date,]
 #remove dates that only have temp values in Heathrow
 
-table(DundeeDailyTempMeans[,1] == HeathrowDailyTempMeans2[,1]) #check all dates are same and in the same position
+table(DundeeDailyTempMeans$Date == HeathrowDailyTempMeans2$Date) #check all dates are same and in the same position
 
-cor(x = DundeeDailyTempMeans[,2],y = HeathrowDailyTempMeans2[,2]) #calculate correlation between daily temperature means
+cor(x = DundeeDailyTempMeans$DailyTempMean, y = HeathrowDailyTempMeans2$DailyTempMean) #calculate correlation between daily temperature means
 #returns [1] 0.8977393
 
 
-HeathrowPressure <- HeathrowRead[,c(1,4)] #isolate time and pressure columns
-table(is.na(HeathrowPressure[,2])) #check for Nas in the pressure column
-HeathrowPressure <- HeathrowPressure[!is.na(HeathrowPressure[,2]),]
-HeathrowPressure$Date <- format(HeathrowPressure$Time,"%y-%m-%d")
+HeathrowPressure <- HeathrowRead[,c("Time", "Sea_Level_PressurehPa")] #isolate time and pressure columns
+table(is.na(HeathrowPressure$Sea_Level_PressurehPa)) #check for Nas in the pressure column
+HeathrowPressure <- HeathrowPressure[!is.na(HeathrowPressure$Sea_Level_PressurehPa),]
+HeathrowPressure <- HeathrowPressure[!HeathrowPressure$Sea_Level_PressurehPa == -9999,]
+HeathrowPressure <- HeathrowPressure[!HeathrowPressure$Sea_Level_PressurehPa == 0,]
+HeathrowPressure$Date <- date(HeathrowPressure$Time)
 HeathrowDailyPressureMeans <- aggregate(cbind("DailyPressureMean" = Sea_Level_PressurehPa) ~ Date, data = HeathrowPressure, FUN = mean)
 
-DundeePressure <- DundeeRead[,c(1,4)] #isolate time and pressure columns
-table(is.na(DundeePressure[,2])) #check for Nas in the pressure column
-DundeePressure <- DundeePressure[!is.na(DundeePressure[,2]),]
-DundeePressure$Date <- format(DundeePressure$Time,"%y-%m-%d")
+DundeePressure <- DundeeRead[,c("Time", "Sea_Level_PressurehPa")] #isolate time and pressure columns
+table(is.na(DundeePressure$Sea_Level_PressurehPa)) #check for Nas in the pressure column
+DundeePressure <- DundeePressure[!is.na(DundeePressure$Sea_Level_PressurehPa),]
+DundeePressure <- DundeePressure[!DundeePressure$Sea_Level_PressurehPa == -9999,]
+DundeePressure$Date <- date(DundeePressure$Time)
 DundeeDailyPressureMeans <- aggregate(cbind("DailyPressureMean" = Sea_Level_PressurehPa) ~ Date, data = DundeePressure, FUN = mean)
 
 
-table(DundeeDailyPressureMeans[,1] %in% HeathrowDailyPressureMeans[,1])
+table(DundeeDailyPressureMeans$Date %in% HeathrowDailyPressureMeans$Date)
 #returns all true
-table(HeathrowDailyPressureMeans[,1] %in% DundeeDailyPressureMeans[,1])
+table(HeathrowDailyPressureMeans$Date %in% DundeeDailyPressureMeans$Date)
 #returns 7 false, the rest true
 
-HeathrowDailyPressureMeans2 <- HeathrowDailyPressureMeans[HeathrowDailyPressureMeans[,1] %in% DundeeDailyPressureMeans[,1],]
+HeathrowDailyPressureMeans2 <- HeathrowDailyPressureMeans[HeathrowDailyPressureMeans$Date %in% DundeeDailyPressureMeans$Date,]
 #remove dates that only have pressure values in Heathrow
 
-table(DundeeDailyPressureMeans[,1] == HeathrowDailyPressureMeans2[,1]) #check all dates are same and in the same position
+table(DundeeDailyPressureMeans$Date == HeathrowDailyPressureMeans2$Date) #check all dates are same and in the same position
 
-cor(x = DundeeDailyPressureMeans[,2],y = HeathrowDailyPressureMeans2[,2]) #calculate correlation between daily humidity means
-#returns [1] 0.7196912
-
-
+cor(x = DundeeDailyPressureMeans$DailyPressureMean,y = HeathrowDailyPressureMeans2$DailyPressureMean) #calculate correlation between daily humidity means
+#returns [1] 0.8330252
 
 
 
-HeathrowHumidity <- HeathrowRead[,c(1,3)] #isolate time and humidity columns
-table(is.na(HeathrowHumidity[,2])) #check for Nas in the humidity column
-HeathrowHumidity <- HeathrowHumidity[!is.na(HeathrowHumidity[,2]),] #remove nas
-HeathrowHumidity$Date <- format(HeathrowHumidity$Time,"%y-%m-%d")
-HeathrowHumidity$Humidity <- as.numeric(HeathrowHumidity[,2]) #coerce to numeric ie "80" becomes 80
-HeathrowHumidity <- HeathrowHumidity[!is.na(HeathrowHumidity[,2]),]
+
+
+HeathrowHumidity <- HeathrowRead[,c("Time","Humidity")] #isolate time and humidity columns
+table(is.na(HeathrowHumidity$Humidity)) #check for Nas in the humidity column
+HeathrowHumidity <- HeathrowHumidity[!is.na(HeathrowHumidity$Humidity),] #remove nas
+HeathrowHumidity$Date <- date(HeathrowHumidity$Time)
+HeathrowHumidity$Humidity <- as.numeric(HeathrowHumidity$Humidity) #coerce to numeric ie "80" becomes 80
+HeathrowHumidity <- HeathrowHumidity[!is.na(HeathrowHumidity$Humidity),]
 HeathrowDailyHumidityMeans <- aggregate(cbind("DailyHumidityMean" = Humidity) ~ Date, data = HeathrowHumidity, FUN = mean)
 
 
-DundeeHumidity <- DundeeRead[,c(1,3)] #isolate time and humidity columns
-table(is.na(DundeeHumidity[,2])) #check for Nas in the humidity column
-DundeeHumidity <- DundeeHumidity[!is.na(DundeeHumidity[,2]),] #remove nas
-DundeeHumidity$Date <- format(DundeeHumidity$Time,"%y-%m-%d")
-DundeeHumidity$Humidity <- as.numeric(DundeeHumidity[,2]) #coerce to numeric ie "80" becomes 80
-DundeeHumidity <- DundeeHumidity[!is.na(DundeeHumidity[,2]),]
+DundeeHumidity <- DundeeRead[,c("Time","Humidity")] #isolate time and humidity columns
+table(is.na(DundeeHumidity$Humidity)) #check for Nas in the humidity column
+DundeeHumidity <- DundeeHumidity[!is.na(DundeeHumidity$Humidity),] #remove nas
+DundeeHumidity$Date <- date(DundeeHumidity$Time)
+DundeeHumidity$Humidity <- as.numeric(DundeeHumidity$Humidity) #coerce to numeric ie "80" becomes 80
+DundeeHumidity <- DundeeHumidity[!is.na(DundeeHumidity$Humidity),]
 DundeeDailyHumidityMeans <- aggregate(cbind("DailyHumidityMean" = Humidity) ~ Date, data = DundeeHumidity, FUN = mean)
 
 
-table(DundeeDailyHumidityMeans[,1] %in% HeathrowDailyHumidityMeans[,1])
+table(DundeeDailyHumidityMeans$Date %in% HeathrowDailyHumidityMeans$Date)
 #returns all true
-table(HeathrowDailyHumidityMeans[,1] %in% DundeeDailyHumidityMeans[,1])
+table(HeathrowDailyHumidityMeans$Date %in% DundeeDailyHumidityMeans$Date)
 #returns 7 false, the rest true
 
-HeathrowDailyHumidityMeans2 <- HeathrowDailyHumidityMeans[HeathrowDailyHumidityMeans[,1] %in% DundeeDailyHumidityMeans[,1],]
+HeathrowDailyHumidityMeans2 <- HeathrowDailyHumidityMeans[HeathrowDailyHumidityMeans$Date %in% DundeeDailyHumidityMeans$Date,]
 #remove dates that only have humidity values in Heathrow
 
-table(DundeeDailyHumidityMeans[,1] == HeathrowDailyHumidityMeans2[,1]) #check all dates are same and in the same position
+table(DundeeDailyHumidityMeans$Date == HeathrowDailyHumidityMeans2$Date) #check all dates are same and in the same position
 
-cor(x = DundeeDailyHumidityMeans[,2],y = HeathrowDailyHumidityMeans2[,2]) #calculate correlation between daily hummidity means
+cor(x = DundeeDailyHumidityMeans$DailyHumidityMean,y = HeathrowDailyHumidityMeans2$DailyHumidityMean) #calculate correlation between daily hummidity means
 #returns [1] 0.4937412
 
 
 
 
-HeathrowWindSpeed <- HeathrowRead[,c(1,5)] #isolate time and wind speed columns
-table(is.na(HeathrowWindSpeed[,2])) #check for Nas in the wind speed column
-HeathrowWindSpeed <- HeathrowWindSpeed[!is.na(HeathrowWindSpeed[,2]),] #remove nas
-HeathrowWindSpeed$Date <- format(HeathrowWindSpeed$Time,"%y-%m-%d")
-HeathrowWindSpeed$Wind_SpeedKm_h <- as.numeric(HeathrowWindSpeed[,2]) #coerce to numeric ie "80" becomes 80
-HeathrowWindSpeed <- HeathrowWindSpeed[!is.na(HeathrowWindSpeed[,2]),]
+HeathrowWindSpeed <- HeathrowRead[,c("Time", "Wind_SpeedKm_h")] #isolate time and wind speed columns
+table(is.na(HeathrowWindSpeed$Wind_SpeedKm_h)) #check for Nas in the wind speed column
+HeathrowWindSpeed <- HeathrowWindSpeed[!is.na(HeathrowWindSpeed$Wind_SpeedKm_h),] #remove nas
+HeathrowWindSpeed$Date <- date(HeathrowWindSpeed$Time)
+HeathrowWindSpeed$Wind_SpeedKm_h <- as.numeric(HeathrowWindSpeed$Wind_SpeedKm_h) #coerce to numeric ie "80" becomes 80
+HeathrowWindSpeed <- HeathrowWindSpeed[!is.na(HeathrowWindSpeed$Wind_SpeedKm_h),]
 HeathrowDailyWindSpeedMeans <- aggregate(cbind("DailyWindSpeedMean" = Wind_SpeedKm_h) ~ Date, data = HeathrowWindSpeed, FUN = mean)
 
 
-DundeeWindSpeed <- DundeeRead[,c(1,5)] #isolate time and wind speed columns
-table(is.na(DundeeWindSpeed[,2])) #check for Nas in the wind speed column
-DundeeWindSpeed <- DundeeWindSpeed[!is.na(DundeeWindSpeed[,2]),] #remove nas
-DundeeWindSpeed$Date <- format(DundeeWindSpeed$Time,"%y-%m-%d")
-DundeeWindSpeed$Wind_SpeedKm_h <- as.numeric(DundeeWindSpeed[,2]) #coerce to numeric ie "80" becomes 80
-DundeeWindSpeed <- DundeeWindSpeed[!is.na(DundeeWindSpeed[,2]),]
+DundeeWindSpeed <- DundeeRead[,c("Time", "Wind_SpeedKm_h")] #isolate time and wind speed columns
+DundeeWindSpeed$Date <- date(DundeeWindSpeed$Time)
+DundeeWindSpeed$Wind_SpeedKm_h <- as.numeric(DundeeWindSpeed$Wind_SpeedKm_h) #coerce to numeric ie "80" becomes 80
+table(is.na(DundeeWindSpeed$Wind_SpeedKm_h)) #check for Nas in the wind speed column
+DundeeWindSpeed <- DundeeWindSpeed[!is.na(DundeeWindSpeed$Wind_SpeedKm_h),] #remove nas
+DundeeWindSpeed <- DundeeWindSpeed[!DundeeWindSpeed$Wind_SpeedKm_h == -9999,]
 DundeeDailyWindSpeedMeans <- aggregate(cbind("DailyWindSpeedMean" = Wind_SpeedKm_h) ~ Date, data = DundeeWindSpeed, FUN = mean)
 
 
 
-table(DundeeDailyWindSpeedMeans[,1] %in% HeathrowDailyWindSpeedMeans[,1])
+table(DundeeDailyWindSpeedMeans$Date %in% HeathrowDailyWindSpeedMeans$Date)
 #returns all true
-table(HeathrowDailyWindSpeedMeans[,1] %in% DundeeDailyWindSpeedMeans[,1])
+table(HeathrowDailyWindSpeedMeans$Date %in% DundeeDailyWindSpeedMeans$Date)
 #returns 7 false, the rest true
 
-HeathrowDailyWindSpeedMeans2 <- HeathrowDailyWindSpeedMeans[HeathrowDailyWindSpeedMeans[,1] %in% DundeeDailyWindSpeedMeans[,1],]
+HeathrowDailyWindSpeedMeans2 <- HeathrowDailyWindSpeedMeans[HeathrowDailyWindSpeedMeans$Date %in% DundeeDailyWindSpeedMeans$Date,]
 #remove dates that only have Wind speed values in Heathrow
 
-table(DundeeDailyWindSpeedMeans[,1] == HeathrowDailyWindSpeedMeans2[,1]) #check all dates are same and in the same position
+table(DundeeDailyWindSpeedMeans$Date == HeathrowDailyWindSpeedMeans2$Date) #check all dates are same and in the same position
 
-cor(x = DundeeDailyWindSpeedMeans[,2],y = HeathrowDailyWindSpeedMeans2[,2]) #calculate correlation between daily windspeed means
-#returns [1] 0.1037135
+cor(x = DundeeDailyWindSpeedMeans$DailyWindSpeedMean, y = HeathrowDailyWindSpeedMeans2$DailyWindSpeedMean) #calculate correlation between daily windspeed means
+#returns [1] 0.4488157
 
 
 
-HeathrowPressureRain <- HeathrowRead[,c(1,6)]
+HeathrowPressureRain <- HeathrowRead[,c("Time", "Events")]
 HeathrowPressureRain$Events <- as.factor(HeathrowPressureRain$Events)
-HeathrowPressureRain$Date <- format(HeathrowPressureRain$Time,"%y-%m-%d")
+HeathrowPressureRain$Date <- date(HeathrowPressureRain$Time)
 HeathrowDailyRainMeans <- aggregate(cbind("DailyRainMean" = Events) ~ Date, data = HeathrowPressureRain, FUN = mean)
 
-HeathrowDailyPressureMeans3 <- HeathrowDailyPressureMeans[HeathrowDailyPressureMeans[,1] %in% HeathrowDailyRainMeans[,1],]
-cor(x = HeathrowDailyRainMeans[,2],y = HeathrowDailyPressureMeans3[,2])
-#returns [1] -0.2857008
+HeathrowDailyPressureMeans3 <- HeathrowDailyPressureMeans[HeathrowDailyPressureMeans$Date %in% HeathrowDailyRainMeans$Date, ]
+cor(x = HeathrowDailyRainMeans$DailyRainMean, y = HeathrowDailyPressureMeans3$DailyPressureMean)
+#returns [1] -0.3847564
 
 
-DundeePressureRain <- DundeeRead[,c(1,6)]
+DundeePressureRain <- DundeeRead[,c("Time", "Events")]
 DundeePressureRain$Events <- as.factor(DundeePressureRain$Events)
-DundeePressureRain$Date <- format(DundeePressureRain$Time,"%y-%m-%d")
+DundeePressureRain$Date <- date(DundeePressureRain$Time)
 DundeeDailyRainMeans <- aggregate(cbind("DailyRainMean" = Events) ~ Date, data = DundeePressureRain, FUN = mean)
 
-DundeeDailyPressureMeans2 <- DundeeDailyPressureMeans[DundeeDailyPressureMeans[,1] %in% DundeeDailyRainMeans[,1],]
-cor(x = DundeeDailyRainMeans[,2],y = DundeeDailyPressureMeans2[,2])
-#returns [1] -0.1522531
+DundeeDailyPressureMeans2 <- DundeeDailyPressureMeans[DundeeDailyPressureMeans$Date %in% DundeeDailyRainMeans$Date, ]
+cor(x = DundeeDailyRainMeans$DailyRainMean, y = DundeeDailyPressureMeans2$DailyPressureMean)
+#returns [1] -0.283742
 
 
 
@@ -206,8 +209,9 @@ HeathrowWindDir <- HeathrowRead[c("Time", "WindDirDegrees")] #isolate time and W
 HeathrowWindDir$Date <- date(HeathrowWindDir$Time)
 HeathrowDailyWindDirMeans <- aggregate(cbind("DailyWindDirMean" = WindDirDegrees) ~ Date, data = HeathrowWindDir, FUN = mean)
 
-HeathrowDailyTempMeans3 <- HeathrowDailyTempMeans[HeathrowDailyTempMeans[,1] %in% HeathrowDailyWindDirMeans[,1],]
-cor(x = HeathrowDailyWindDirMeans[,2],y = HeathrowDailyTempMeans3[,2])
+HeathrowDailyTempMeans3 <- HeathrowDailyTempMeans[HeathrowDailyTempMeans$Date %in% HeathrowDailyWindDirMeans$Date, ]
+HeathrowDailyWindDirMeans2 <- HeathrowDailyWindDirMeans[HeathrowDailyWindDirMeans$Date %in% HeathrowDailyTempMeans$Date, ]
+cor(x = HeathrowDailyWindDirMeans2$DailyWindDirMean, y = HeathrowDailyTempMeans3$DailyTempMean)
 #returns [1] -0.03342881
 
 
@@ -215,8 +219,8 @@ DundeeWindDir <- DundeeRead[c("Time", "WindDirDegrees")] #isolate time and Wind 
 DundeeWindDir$Date <- date(DundeeWindDir$Time)
 DundeeDailyWindDirMeans <- aggregate(cbind("DailyWindDirMean" = WindDirDegrees) ~ Date, data = DundeeWindDir, FUN = mean)
 
-DundeeDailyTempMeans2 <- DundeeDailyTempMeans[DundeeDailyTempMeans[,1] %in% DundeeDailyWindDirMeans[,1],]
-cor(x = DundeeDailyWindDirMeans[,2],y = DundeeDailyTempMeans2[,2])
+DundeeDailyTempMeans2 <- DundeeDailyTempMeans[DundeeDailyTempMeans$Date %in% DundeeDailyWindDirMeans$Date, ]
+cor(x = DundeeDailyWindDirMeans$DailyWindDirMean, y = DundeeDailyTempMeans2$DailyTempMean)
 #returns [1] -0.1339723
 
 
@@ -224,21 +228,20 @@ cor(x = DundeeDailyWindDirMeans[,2],y = DundeeDailyTempMeans2[,2])
 ggplot() +  #ggplot for heathrow/dundee daily pressure means
   geom_point(data = HeathrowDailyPressureMeans, color = "blue",aes(Date,DailyPressureMean)) +
   geom_point(data = DundeeDailyPressureMeans, color = "red",aes(Date,DailyPressureMean))
-#need to clean data!
+
 
 ggplot() +  #ggplot for heathrow/dundee daily humidity means
   geom_point(data = HeathrowDailyHumidityMeans, color = "blue",aes(Date,DailyHumidityMean)) +
   geom_point(data = DundeeDailyHumidityMeans, color = "red",aes(Date,DailyHumidityMean))
-#change x axis labels- just a blur at the moment
+
 
 ggplot() +  #ggplot for heathrow/dundee daily wind speed means
   geom_point(data = HeathrowDailyWindSpeedMeans, color = "blue",aes(Date,DailyWindSpeedMean)) +
   geom_point(data = DundeeDailyWindSpeedMeans, color = "red",aes(Date,DailyWindSpeedMean))
-#need to clean data!
 
 
 #Improvements:
 #   - use a function to save copy and pasting
 #   - na.rm is an arguement to some functions. Saves subsetting with !is.na
-#   - change labels on the x axis of the plots (yearly propably appropriate in this case)
+
 
