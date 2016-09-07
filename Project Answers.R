@@ -243,5 +243,5 @@ ggplot() +  #ggplot for heathrow/dundee daily wind speed means
 #Improvements:
 #   - use a function to save copy and pasting
 #   - na.rm is an arguement to some functions. Saves subsetting with !is.na
-
+#   - add key to ggplots to attach meaning to colours
 
