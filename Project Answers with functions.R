@@ -13,11 +13,21 @@ CleanData <- function( Data, WeatherArg) {
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Temperature), ]
     MyCleanData <- MyCleanData[ !MyCleanData$Temperature == -9999, ]
   }
-  else if (identical( WeatherArg[ 2], "Humidity")) {
+  else if ( identical( WeatherArg[ 2], "Humidity")) {
     MyCleanData$Humidity <- as.numeric( MyCleanData$Humidity)
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Humidity), ]
   }
-} #needs finishing
+  else if ( identical( WeatherArg[ 2], "Sea_Level_PressurehPa")) {
+    MyCleanData <- MyCleanData[ !is.na( MyCleanData$Sea_Level_PressurehPa), ]
+    MyCleanData <- MyCleanData[ !MyCleanData$Sea_Level_PressurehPa == -9999, ]
+    MyCleanData <- MyCleanData[ !MyCleanData$Sea_Level_PressurehPa == 0, ]
+  }
+  else if ( identical( WeatherArg[ 2], "Wind_SpeedKm_h")) {
+    MyCleanData$Wind_SpeedKm_h <- as.numeric( MyCleanData$Wind_SpeedKm_h)
+    MyCleanData <- MyCleanData[ !is.na( MyCleanData$Wind_SpeedKm_h), ]
+    MyCleanData <- MyCleanData[ !MyCleanData$Wind_SpeedKm_h == -9999, ]
+  }
+}
 
 ReadData <- function( City) {
 # Take argurement City, either "Heathrow" or "Dundee and loads the correspponding data file
@@ -77,5 +87,10 @@ CorrelatedValues <- function( City1, City2, WeatherArg) {
   AverageCity2 <- WeatherAverages( City2, WeatherArg)
   AverageCity1b <- AverageCity1[ AverageCity1$Date %in% AverageCity2$Date, ]
   AverageCity2b <- AverageCity2[ AverageCity2$Date %in% AverageCity1$Date, ]
-  cor( AverageCity1b$TemperatureC, AverageCity2b$TemperatureC)
-} #change to generic weather arguement
+  cor( AverageCity1b[[ 2]], AverageCity2b[[ 2]])
+} 
+
+RainAsFactors <- function( City) {
+  
+} #Needs finishing
+

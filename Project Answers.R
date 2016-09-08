@@ -185,7 +185,7 @@ cor(x = DundeeDailyWindSpeedMeans$DailyWindSpeedMean, y = HeathrowDailyWindSpeed
 
 
 HeathrowPressureRain <- HeathrowRead[,c("Time", "Events")]
-HeathrowPressureRain$Events <- as.factor(HeathrowPressureRain$Events)
+HeathrowPressureRain$Events <- factor(HeathrowPressureRain$Events)
 HeathrowPressureRain$Date <- date(HeathrowPressureRain$Time)
 HeathrowDailyRainMeans <- aggregate(cbind("DailyRainMean" = Events) ~ Date, data = HeathrowPressureRain, FUN = mean)
 
@@ -195,7 +195,7 @@ cor(x = HeathrowDailyRainMeans$DailyRainMean, y = HeathrowDailyPressureMeans3$Da
 
 
 DundeePressureRain <- DundeeRead[,c("Time", "Events")]
-DundeePressureRain$Events <- as.factor(DundeePressureRain$Events)
+DundeePressureRain$Events <- factor(DundeePressureRain$Events)
 DundeePressureRain$Date <- date(DundeePressureRain$Time)
 DundeeDailyRainMeans <- aggregate(cbind("DailyRainMean" = Events) ~ Date, data = DundeePressureRain, FUN = mean)
 
@@ -238,6 +238,12 @@ ggplot() +  #ggplot for heathrow/dundee daily humidity means
 ggplot() +  #ggplot for heathrow/dundee daily wind speed means
   geom_point(data = HeathrowDailyWindSpeedMeans, color = "blue",aes(Date,DailyWindSpeedMean)) +
   geom_point(data = DundeeDailyWindSpeedMeans, color = "red",aes(Date,DailyWindSpeedMean))
+
+
+
+
+plot(HeathrowDailyRainMeans[,2], HeathrowDailyPressureMeans3[ ,2])
+
 
 
 #Improvements:
