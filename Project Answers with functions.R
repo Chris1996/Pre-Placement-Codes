@@ -12,26 +12,21 @@ CleanData <- function( Data, WeatherArg) {
   if ( identical( WeatherArg[ 2], "TemperatureC")) {
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Temperature), ]
     MyCleanData <- MyCleanData[ !MyCleanData$Temperature == -9999, ]
-  }
-  else if ( identical( WeatherArg[ 2], "Humidity")) {
+  } else if ( identical( WeatherArg[ 2], "Humidity")) {
     MyCleanData$Humidity <- as.numeric( MyCleanData$Humidity)
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Humidity), ]
-  }
-  else if ( identical( WeatherArg[ 2], "Sea_Level_PressurehPa")) {
+  } else if ( identical( WeatherArg[ 2], "Sea_Level_PressurehPa")) {
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Sea_Level_PressurehPa), ]
     MyCleanData <- MyCleanData[ !MyCleanData$Sea_Level_PressurehPa == -9999, ]
     MyCleanData <- MyCleanData[ !MyCleanData$Sea_Level_PressurehPa == 0, ]
-  }
-  else if ( identical( WeatherArg[ 2], "Wind_SpeedKm_h")) {
+  } else if ( identical( WeatherArg[ 2], "Wind_SpeedKm_h")) {
     MyCleanData$Wind_SpeedKm_h <- as.numeric( MyCleanData$Wind_SpeedKm_h)
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Wind_SpeedKm_h), ]
     MyCleanData <- MyCleanData[ !MyCleanData$Wind_SpeedKm_h == -9999, ]
-  }
-  else if ( identical( WeatherArg[ 2], "Events")) {
+  } else if ( identical( WeatherArg[ 2], "Events")) {
     MyCleanData$Events <- factor( MyCleanData$Events)
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Events), ]
-  }
-  else if ( identical( WeatherArg [ 2], "WindDirDegrees")) {
+  } else if ( identical( WeatherArg [ 2], "WindDirDegrees")) {
     MyCleanData$WindDirDegrees <- as.numeric( MyCleanData$WindDirDegrees)
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$WindDirDegrees), ]
     MyCleanData <- MyCleanData[ MyCleanData$WindDirDegrees <= 360, ]
@@ -45,13 +40,11 @@ ReadData <- function( City) {
     MyData <- read.table( "Processed/rowDataH.tsv", sep="\t", header = T, stringsAsFactors = F) #heathrow weather data
     MyData$Time <- as.POSIXct( MyData$Time)
     return( MyData)
-  }
-  else if ( City == "Dundee") {
+  } else if ( City == "Dundee") {
     MyData <- read.table( "Processed/rowDataD.tsv", sep="\t", header = T, stringsAsFactors = F) #dundee weather data
     MyData$Time <- as.POSIXct( MyData$Time)
     return( MyData)
-  }
-  else
+  } else
     print( "Check input args, ReadData only accepts Heathrow or Dundee")
 }
 
@@ -65,13 +58,11 @@ WeatherAverages <- function( City, WeatherArg, TimeDif = date, Average = mean) {
   MyData2 <- MyData[ , WeatherArg]
   if ( identical( TimeDif, date)) {
     MyData2$Time <- date( MyData2$Time)
-  }
-  else if ( identical( TimeDif, week)) {
+  } else if ( identical( TimeDif, week)) {
     YearNum <- year( MyData2$Time)
     WeekNum <- week( MyData2$Time)
     MyData2$Time <- YearNum * 100 + WeekNum
-  }
-  else if ( identical( TimeDif, month)) {
+  } else if ( identical( TimeDif, month)) {
     YearNum <- year( MyData2$Time)
     MonthNum <- month( MyData2$Time)
     MyData2$Time <- YearNum * 100 + MonthNum
@@ -83,6 +74,7 @@ WeatherAverages <- function( City, WeatherArg, TimeDif = date, Average = mean) {
 }
 
 VisualizeAverages <- function( City1, City2, WeatherArg, TimeDif = date, Average = mean) {
+# Creates a scatter graph of time vs chosen weather arguement  
   data1 <- WeatherAverages( City1, WeatherArg, TimeDif, Average)
   data2 <- WeatherAverages( City2, WeatherArg, TimeDif, Average)
   ggplot() +
@@ -119,8 +111,7 @@ VisualizeRelationshipsBoxplot <- function( City, WeatherArg, Rain = F) {
   if ( Rain == T) {
     if ( identical( City, "Heathrow")) {
       levels( MyData$Events) <- c( "No Rain", "No Rain", "Rain", "Rain", "Rain", "Rain", "Rain")
-    }
-    else if (identical( City, "Dundee")) {
+    } else if (identical( City, "Dundee")) {
       levels( MyData$Events) <- c( "No Rain", "No Rain", "Rain", "Rain", "Rain", "Rain", "Rain", "Rain", "Rain")
     }
   }
