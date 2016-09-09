@@ -81,7 +81,9 @@ VisualizeAverages <- function( City1, City2, WeatherArg, TimeDif = date, Average
     geom_point( data = data1, aes_string( WeatherArg[ 1], WeatherArg[ 2], colour = "'blue'")) +
     geom_point( data = data2, aes_string( WeatherArg[ 1], WeatherArg[ 2], colour = "'red'")) +
     scale_colour_manual( labels = c("Heathrow", "Dundee"), values = c( "blue", "red")) +
-    labs( colour = "Cities")
+    labs( colour = "Cities") +
+    theme( panel.background = element_rect( fill = "white"),
+           panel.grid.major = element_line( colour = "grey"))
 } 
 
 CorrelatedValues <- function( City1, City2, WeatherArg) {
@@ -116,8 +118,10 @@ VisualizeRelationshipsBoxplot <- function( City, WeatherArg, Rain = F) {
     }
   }
   ggplot( data = MyData, na.rm = T) +
-    geom_boxplot( aes_string( WeatherArg[ 1], WeatherArg[ 2])) +
-    ggtitle( City)
+    geom_boxplot( aes_string( WeatherArg[ 1], WeatherArg[ 2], fill = WeatherArg[ 1])) +
+    ggtitle( City) +
+    theme( panel.background = element_rect( fill = "white"),
+           panel.grid.major = element_line( colour = "grey"))
 }
 
 VisualizeRelationshipsScatter <- function( City, WeatherArg) {
