@@ -7,8 +7,8 @@ setwd("~/R/WeatherProject")
 CleanData <- function( Data, WeatherArg) {
 # Remove NAs and uneccessary values
 # Args: Data = a data frame or data table to be cleaned
-#       WeatherArg = The column of the data to be cleaned
-  MyCleanData <- Data
+#       WeatherArg = Vector indicating the columns of the data to be cleaned
+  MyCleanData <- Data[ , WeatherArg]
   if ( identical( WeatherArg[ 2], "TemperatureC")) {
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Temperature), ]
     MyCleanData <- MyCleanData[ !MyCleanData$Temperature == -9999, ]
@@ -26,6 +26,15 @@ CleanData <- function( Data, WeatherArg) {
     MyCleanData$Wind_SpeedKm_h <- as.numeric( MyCleanData$Wind_SpeedKm_h)
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Wind_SpeedKm_h), ]
     MyCleanData <- MyCleanData[ !MyCleanData$Wind_SpeedKm_h == -9999, ]
+  }
+  else if ( identical( WeatherArg[ 2], "Events")) {
+    MyCleanData$Events <- factor( MyCleanData$Events)
+    MyCleanData <- MyCleanData[ !is.na( MyCleanData$Events), ]
+  }
+  else if ( identical( WeatherArg [ 2], "WindDirDegrees")) {
+    MyCleanData$WindDirDegrees <- as.numeric( MyCleanData$WindDirDegrees)
+    MyCleanData <- MyCleanData[ !is.na( MyCleanData$WindDirDegrees), ]
+    MyCleanData <- MyCleanData[ MyCleanData$WindDirDegrees <= 360, ]
   }
 }
 
@@ -55,29 +64,33 @@ WeatherAverages <- function( City, WeatherArg, TimeDif = date, Average = mean) {
   MyData <- CleanData( ReadData( City), WeatherArg)
   MyData2 <- MyData[ , WeatherArg]
   if ( identical( TimeDif, date)) {
-    MyData2$Date <- date( MyData2$Time)
+    MyData2$Time <- date( MyData2$Time)
   }
   else if ( identical( TimeDif, week)) {
     YearNum <- year( MyData2$Time)
     WeekNum <- week( MyData2$Time)
-    MyData2$Date <- YearNum * 100 + WeekNum
+    MyData2$Time <- YearNum * 100 + WeekNum
   }
   else if ( identical( TimeDif, month)) {
     YearNum <- year( MyData2$Time)
     MonthNum <- month( MyData2$Time)
-    MyData2$Date <- YearNum * 100 + MonthNum
+    MyData2$Time <- YearNum * 100 + MonthNum
   }
   MyData2[ , WeatherArg[ 2]] <- as.numeric( MyData2[ , WeatherArg[ 2]])
   MyData2 <- MyData2[ !is.na( MyData2[ , WeatherArg[ 2]]), ]
-  MyMeanData <- aggregate( MyData2, by = MyData2[ "Date"], FUN = Average)
-  MyMeanData <- MyMeanData[ , c( "Date", WeatherArg[ 2])]
+  MyMeanData <- aggregate( MyData2, by = MyData2[ "Time"], FUN = Average)
+  MyMeanData <- MyMeanData[ , c( "Time", WeatherArg[ 2])]
 }
 
 VisualizeAverages <- function( City1, City2, WeatherArg, TimeDif = date, Average = mean) {
+  data1 <- WeatherAverages( City1, WeatherArg, TimeDif, Average)
+  data2 <- WeatherAverages( City2, WeatherArg, TimeDif, Average)
   ggplot() +
-    geom_point( data = WeatherAverages( City1, WeatherArg, TimeDif, Average), color = "blue", aes( Date, TemperatureC)) +
-    geom_point( data = WeatherAverages( City2, WeatherArg, TimeDif, Average), color = "red", aes( Date, TemperatureC))
-} #needs finishing
+    geom_point( data = data1, aes_string( WeatherArg[ 1], WeatherArg[ 2], colour = "'blue'")) +
+    geom_point( data = data2, aes_string( WeatherArg[ 1], WeatherArg[ 2], colour = "'red'")) +
+    scale_colour_manual( labels = c("Heathrow", "Dundee"), values = c( "blue", "red")) +
+    labs( colour = "Cities")
+} 
 
 CorrelatedValues <- function( City1, City2, WeatherArg) {
 # Calculates correlation of a weather pattern between two cities
@@ -90,7 +103,49 @@ CorrelatedValues <- function( City1, City2, WeatherArg) {
   cor( AverageCity1b[[ 2]], AverageCity2b[[ 2]])
 } 
 
-RainAsFactors <- function( City) {
-  
-} #Needs finishing
+RainOrNoRain <- function( City) {
+  # Reads, cleans and converts the events coloumn to factors "Rain" or "No Rain"
+  MyData <- ReadData( City)[ , c("Time", "Events")]
+  MyData$Events <- factor( MyData$Events)
+  levels( MyData$Events) <- c( "No Rain", "No Rain", "Rain", "Rain", "Rain", "Rain", "Rain")
+  MyData <- MyData[ !is.na( MyData$Events), ]
+}
+
+VisualizeRelationshipsBoxplot <- function( City, WeatherArg, Rain = F) {
+# Gives a graphical representation of the relationship between 2 weather variables...
+# ...in the given City
+  MyData <- CleanData( ReadData( City), WeatherArg)
+  MyData <- CleanData( MyData, rev(WeatherArg))
+  if ( Rain == T) {
+    if ( identical( City, "Heathrow")) {
+      levels( MyData$Events) <- c( "No Rain", "No Rain", "Rain", "Rain", "Rain", "Rain", "Rain")
+    }
+    else if (identical( City, "Dundee")) {
+      levels( MyData$Events) <- c( "No Rain", "No Rain", "Rain", "Rain", "Rain", "Rain", "Rain", "Rain", "Rain")
+    }
+  }
+  ggplot( data = MyData, na.rm = T) +
+    geom_boxplot( aes_string( WeatherArg[ 1], WeatherArg[ 2])) +
+    ggtitle( City)
+}
+
+VisualizeRelationshipsScatter <- function( City, WeatherArg) {
+# Gives a graphical representation of the relationship between 2 weather variables...
+# ...in the given City
+  MyData <- CleanData( ReadData( City), WeatherArg)
+  MyData <- CleanData( MyData, rev(WeatherArg))
+  ggplot( data = MyData, na.rm = T) +
+    geom_point( aes_string( WeatherArg[ 1], WeatherArg[ 2]))
+} 
+
+VisualizePolar <- function( City, TempRange = c( 0, 15)) {
+  MyData <- CleanData( ReadData( City), c( "WindDirDegrees", "TemperatureC"))
+  MyData <- CleanData( MyData, rev(c( "WindDirDegrees", "TemperatureC")))
+  MyMeanData <- aggregate( MyData, by = MyData[ "WindDirDegrees"], FUN = mean)
+  ggplot( data = MyMeanData, na.rm = T) +
+    geom_line( aes( x = MyMeanData$WindDirDegrees, y = MyMeanData$TemperatureC)) +
+    ylim( TempRange) +
+    coord_polar( theta = "x") +
+    ggtitle( City)
+}
 

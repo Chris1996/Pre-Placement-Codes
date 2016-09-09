@@ -185,9 +185,9 @@ cor(x = DundeeDailyWindSpeedMeans$DailyWindSpeedMean, y = HeathrowDailyWindSpeed
 
 
 HeathrowPressureRain <- HeathrowRead[,c("Time", "Events")]
-HeathrowPressureRain$Events <- factor(HeathrowPressureRain$Events)
-HeathrowPressureRain$Date <- date(HeathrowPressureRain$Time)
-HeathrowDailyRainMeans <- aggregate(cbind("DailyRainMean" = Events) ~ Date, data = HeathrowPressureRain, FUN = mean)
+#HeathrowPressureRain$Events <- factor(HeathrowPressureRain$Events)
+#HeathrowPressureRain$Date <- date(HeathrowPressureRain$Time)
+#HeathrowDailyRainMeans <- aggregate(cbind("DailyRainMean" = Events) ~ Date, data = HeathrowPressureRain, FUN = mean)
 
 HeathrowDailyPressureMeans3 <- HeathrowDailyPressureMeans[HeathrowDailyPressureMeans$Date %in% HeathrowDailyRainMeans$Date, ]
 cor(x = HeathrowDailyRainMeans$DailyRainMean, y = HeathrowDailyPressureMeans3$DailyPressureMean)
@@ -242,7 +242,24 @@ ggplot() +  #ggplot for heathrow/dundee daily wind speed means
 
 
 
-plot(HeathrowDailyRainMeans[,2], HeathrowDailyPressureMeans3[ ,2])
+
+
+HeathrowPressureRain2 <- CleanData( ReadData( "Heathrow"), c("Time", "Sea_Level_PressurehPa"))
+HeathrowPressureRain2$Events <- factor( HeathrowPressureRain2$Events)
+levels( HeathrowPressureRain2$Events) <- c( "No Rain", "No Rain", "Rain", "Rain", "Rain", "Rain", "Rain")
+boxplot( HeathrowPressureRain2$Sea_Level_PressurehPa ~ HeathrowPressureRain2$Events, data  = HeathrowPressureRain2)
+
+
+ggplot( data = HeathrowPressureRain2[ , c( "Sea_Level_PressurehPa", "Events")], na.rm = T) +
+  geom_boxplot( aes( Events, Sea_Level_PressurehPa))
+
+
+ggplot( data = HeathrowPressureRain2[ , c( "Sea_Level_PressurehPa", "Events")], na.rm = T) +
+  geom_density( aes( Sea_Level_PressurehPa, colour = Events))
+
+
+
+
 
 
 
@@ -250,4 +267,3 @@ plot(HeathrowDailyRainMeans[,2], HeathrowDailyPressureMeans3[ ,2])
 #   - use a function to save copy and pasting
 #   - na.rm is an arguement to some functions. Saves subsetting with !is.na
 #   - add key to ggplots to attach meaning to colours
-
