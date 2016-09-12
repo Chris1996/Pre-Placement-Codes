@@ -1,8 +1,7 @@
 library(weatherData)
 library(ggplot2)
-library(data.table)
 library(lubridate)
-setwd("~/R/WeatherProject")
+setwd("~/R/WeatherProject/WeatherProject/")
 
 CleanData <- function( Data, WeatherArg) {
 # Remove NAs and uneccessary values
@@ -111,7 +110,7 @@ RainOrNoRain <- function( City) {
   MyData <- MyData[ !is.na( MyData$Events), ]
 }
 
-VisualizeRelationshipsBoxplot <- function( City, WeatherArg, Rain = F, Colour = "Set1") {
+VisualizeRelationshipsBoxplot <- function( City, WeatherArg, Rain = F, Colour = "Blues") {
 # Gives a graphical representation of the relationship between 2 weather variables...
 # ...in the given City
   MyData <- CleanData( ReadData( City), WeatherArg)
@@ -158,7 +157,7 @@ VisualizePolar <- function( City, TempRange = c( 0, 15)) {
 
 
 ######################################################################
-Heathrow <- ReadData("Heathrow")
-Dundee <- ReadData("Dundee")
+#Heathrow <- ReadData("Heathrow")
+#Dundee <- ReadData("Dundee")
 
-VisualizeAverages("Heathrow", "Dundee", c("Time", "TemperatureC"))
+#VisualizeAverages("Heathrow", "Dundee", c("Time", "TemperatureC"))
