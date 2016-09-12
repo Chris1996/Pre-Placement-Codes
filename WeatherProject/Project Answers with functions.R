@@ -12,25 +12,31 @@ CleanData <- function( Data, WeatherArg) {
   if ( identical( WeatherArg[ 2], "TemperatureC")) {
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Temperature), ]
     MyCleanData <- MyCleanData[ !MyCleanData$Temperature == -9999, ]
-  } else if ( identical( WeatherArg[ 2], "Humidity")) {
+  }
+  if ( identical( WeatherArg[ 2], "Humidity")) {
     MyCleanData$Humidity <- as.numeric( MyCleanData$Humidity)
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Humidity), ]
-  } else if ( identical( WeatherArg[ 2], "Sea_Level_PressurehPa")) {
+  }
+  if ( identical( WeatherArg[ 2], "Sea_Level_PressurehPa")) {
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Sea_Level_PressurehPa), ]
     MyCleanData <- MyCleanData[ !MyCleanData$Sea_Level_PressurehPa == -9999, ]
     MyCleanData <- MyCleanData[ !MyCleanData$Sea_Level_PressurehPa == 0, ]
-  } else if ( identical( WeatherArg[ 2], "Wind_SpeedKm_h")) {
+  }
+  if ( identical( WeatherArg[ 2], "Wind_SpeedKm_h")) {
     MyCleanData$Wind_SpeedKm_h <- as.numeric( MyCleanData$Wind_SpeedKm_h)
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Wind_SpeedKm_h), ]
     MyCleanData <- MyCleanData[ !MyCleanData$Wind_SpeedKm_h == -9999, ]
-  } else if ( identical( WeatherArg[ 2], "Events")) {
+  }
+  if ( identical( WeatherArg[ 2], "Events")) {
     MyCleanData$Events <- factor( MyCleanData$Events)
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Events), ]
-  } else if ( identical( WeatherArg [ 2], "WindDirDegrees")) {
+  }
+  if ( identical( WeatherArg [ 2], "WindDirDegrees")) {
     MyCleanData$WindDirDegrees <- as.numeric( MyCleanData$WindDirDegrees)
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$WindDirDegrees), ]
     MyCleanData <- MyCleanData[ MyCleanData$WindDirDegrees <= 360, ]
   }
+  return(MyCleanData)
 }
 
 ReadData <- function( City) {
@@ -150,3 +156,9 @@ VisualizePolar <- function( City, TempRange = c( 0, 15)) {
            panel.grid.minor = element_line( colour = "grey"))
 }
 
+
+######################################################################
+Heathrow <- ReadData("Heathrow")
+Dundee <- ReadData("Dundee")
+
+VisualizeAverages("Heathrow", "Dundee", c("Time", "TemperatureC"))
