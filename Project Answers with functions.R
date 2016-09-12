@@ -105,7 +105,7 @@ RainOrNoRain <- function( City) {
   MyData <- MyData[ !is.na( MyData$Events), ]
 }
 
-VisualizeRelationshipsBoxplot <- function( City, WeatherArg, Rain = F) {
+VisualizeRelationshipsBoxplot <- function( City, WeatherArg, Rain = F, Colour = "Set1") {
 # Gives a graphical representation of the relationship between 2 weather variables...
 # ...in the given City
   MyData <- CleanData( ReadData( City), WeatherArg)
@@ -120,6 +120,7 @@ VisualizeRelationshipsBoxplot <- function( City, WeatherArg, Rain = F) {
   ggplot( data = MyData, na.rm = T) +
     geom_boxplot( aes_string( WeatherArg[ 1], WeatherArg[ 2], fill = WeatherArg[ 1])) +
     ggtitle( City) +
+    scale_fill_brewer( palette = Colour) +
     theme( panel.background = element_rect( fill = "white"),
            panel.grid.major = element_line( colour = "grey"))
 }
@@ -130,7 +131,9 @@ VisualizeRelationshipsScatter <- function( City, WeatherArg) {
   MyData <- CleanData( ReadData( City), WeatherArg)
   MyData <- CleanData( MyData, rev(WeatherArg))
   ggplot( data = MyData, na.rm = T) +
-    geom_point( aes_string( WeatherArg[ 1], WeatherArg[ 2]))
+    geom_point( aes_string( WeatherArg[ 1], WeatherArg[ 2])) +
+    theme( panel.background = element_rect( fill = "white"),
+           panel.grid.major = element_line( colour = "grey"))
 } 
 
 VisualizePolar <- function( City, TempRange = c( 0, 15)) {
@@ -138,9 +141,12 @@ VisualizePolar <- function( City, TempRange = c( 0, 15)) {
   MyData <- CleanData( MyData, rev(c( "WindDirDegrees", "TemperatureC")))
   MyMeanData <- aggregate( MyData, by = MyData[ "WindDirDegrees"], FUN = mean)
   ggplot( data = MyMeanData, na.rm = T) +
-    geom_line( aes( x = MyMeanData$WindDirDegrees, y = MyMeanData$TemperatureC)) +
+    geom_line( aes( x = MyMeanData$WindDirDegrees, y = MyMeanData$TemperatureC, colour = "red")) +
     ylim( TempRange) +
     coord_polar( theta = "x") +
-    ggtitle( City)
+    ggtitle( City) +
+    theme( panel.background = element_rect( fill = "white"),
+           panel.grid.major = element_line( colour = "grey"),
+           panel.grid.minor = element_line( colour = "grey"))
 }
 
