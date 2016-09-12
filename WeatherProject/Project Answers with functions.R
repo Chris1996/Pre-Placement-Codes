@@ -4,33 +4,33 @@ library(lubridate)
 setwd("~/R/WeatherProject/WeatherProject/")
 
 CleanData <- function( Data, WeatherArg) {
-# Remove NAs and uneccessary values
-# Args: Data = a data frame or data table to be cleaned
-#       WeatherArg = Vector indicating the columns of the data to be cleaned
+  # Remove NAs and uneccessary values
+  # Args: Data = a data frame or data table to be cleaned
+  #       WeatherArg = Vector indicating the columns of the data to be cleaned
   MyCleanData <- Data[ , WeatherArg]
-  if ( identical( WeatherArg[ 2], "TemperatureC")) {
+  if ( WeatherArg[ 2] == "TemperatureC") {
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Temperature), ]
     MyCleanData <- MyCleanData[ !MyCleanData$Temperature == -9999, ]
   }
-  if ( identical( WeatherArg[ 2], "Humidity")) {
+  if ( WeatherArg[ 2] == "Humidity") {
     MyCleanData$Humidity <- as.numeric( MyCleanData$Humidity)
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Humidity), ]
   }
-  if ( identical( WeatherArg[ 2], "Sea_Level_PressurehPa")) {
+  if ( WeatherArg[ 2] == "Sea_Level_PressurehPa") {
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Sea_Level_PressurehPa), ]
     MyCleanData <- MyCleanData[ !MyCleanData$Sea_Level_PressurehPa == -9999, ]
     MyCleanData <- MyCleanData[ !MyCleanData$Sea_Level_PressurehPa == 0, ]
   }
-  if ( identical( WeatherArg[ 2], "Wind_SpeedKm_h")) {
+  if ( WeatherArg[ 2] == "Wind_SpeedKm_h") {
     MyCleanData$Wind_SpeedKm_h <- as.numeric( MyCleanData$Wind_SpeedKm_h)
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Wind_SpeedKm_h), ]
     MyCleanData <- MyCleanData[ !MyCleanData$Wind_SpeedKm_h == -9999, ]
   }
-  if ( identical( WeatherArg[ 2], "Events")) {
+  if ( WeatherArg[ 2] == "Events") {
     MyCleanData$Events <- factor( MyCleanData$Events)
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Events), ]
   }
-  if ( identical( WeatherArg [ 2], "WindDirDegrees")) {
+  if ( WeatherArg [ 2] == "WindDirDegrees") {
     MyCleanData$WindDirDegrees <- as.numeric( MyCleanData$WindDirDegrees)
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$WindDirDegrees), ]
     MyCleanData <- MyCleanData[ MyCleanData$WindDirDegrees <= 360, ]
