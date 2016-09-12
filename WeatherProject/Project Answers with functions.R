@@ -155,9 +155,3 @@ VisualizePolar <- function( City, TempRange = c( 0, 15)) {
            panel.grid.minor = element_line( colour = "grey"))
 }
 
-
-######################################################################
-#Heathrow <- ReadData("Heathrow")
-#Dundee <- ReadData("Dundee")
-
-#VisualizeAverages("Heathrow", "Dundee", c("Time", "TemperatureC"))
