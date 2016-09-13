@@ -36,8 +36,8 @@ VisualizeAverages <- function( City1, City2, WeatherArg, TimeDif = date, Average
   data1 <- WeatherAverages( City1, WeatherArg, TimeDif, Average)
   data2 <- WeatherAverages( City2, WeatherArg, TimeDif, Average)
   ggplot() +
-    geom_point( data = data1, aes_string( WeatherArg[ 1], WeatherArg[ 2], colour = "'blue'")) +
-    geom_point( data = data2, aes_string( WeatherArg[ 1], WeatherArg[ 2], colour = "'red'")) +
+    geom_point( data = data1, aes_string( WeatherArg[ 1], WeatherArg[ 2], colour = "'City1'")) +
+    geom_point( data = data2, aes_string( WeatherArg[ 1], WeatherArg[ 2], colour = "'City2'")) +
     scale_colour_manual( labels = c("Heathrow", "Dundee"), values = c( "blue", "red")) +
     labs( colour = "Cities") +
     theme( panel.background = element_rect( fill = "white"),
@@ -91,7 +91,7 @@ VisualizePolar <- function( City, TempRange = c( 0, 15)) {
   MyData <- CleanData( MyData, rev(c( "WindDirDegrees", "TemperatureC")))
   MyMeanData <- aggregate( MyData, by = MyData[ "WindDirDegrees"], FUN = mean)
   ggplot( data = MyMeanData, na.rm = T) +
-    geom_line( aes( x = MyMeanData$WindDirDegrees, y = MyMeanData$TemperatureC, colour = "red")) +
+    geom_line( aes( x = MyMeanData$WindDirDegrees, y = MyMeanData$TemperatureC)) +
     ylim( TempRange) +
     coord_polar( theta = "x") +
     ggtitle( City) +
@@ -166,17 +166,36 @@ visual.ws.cor <- VisualizeAverages( Heathrow, Dundee, c("Time", "Wind_SpeedKm_h"
 lhr.events.pressure <- VisualizeRelationshipsBoxplot( Heathrow, 
                                                       c("Events", "Sea_Level_PressurehPa"))
 lhr.rain.pressure <- VisualizeRelationshipsBoxplot( Heathrow, 
-                                                    c("Events", "Sea_Level_PressurehPa"), Rain = T)
+                                                    c("Events", "Sea_Level_PressurehPa"), 
+                                                    Rain = T)
 
 dun.events.pressure <- VisualizeRelationshipsBoxplot( Dundee, 
                                                       c("Events", "Sea_Level_PressurehPa"))
 dun.rain.pressure <- VisualizeRelationshipsBoxplot( Dundee, 
-                                                    c("Events", "Sea_Level_PressurehPa"), Rain = T)
+                                                    c("Events", "Sea_Level_PressurehPa"), 
+                                                    Rain = T)
 
 #Visualize how Wind Direction is related to Temperature change in Heathrow
 #and Dundee
 lhr.wind.dir.temp <- VisualizePolar( Heathrow, TempRange = c(9, 14))
 
 dun.wind.dir.temp <- VisualizePolar( Dundee, TempRange = c(6, 13))
+
+
+
+name <- c("temp.correlation", 
+          "pressure.correlation", 
+          "humidity.correlation",
+          "wind.speed.correlation")
+value <- c(temp.correlation, 
+           pressure.correlation, 
+           humidity.correlation,
+           wind.speed.correlation)
+correlated.results <- data.frame(name,value)
+#already written the file, don't want to keep overwriting
+#write.table(correlated.results, file = "Results/correlated_results.tsv", sep = "\t", row.names = F)
+                                 
+
+
 
 
