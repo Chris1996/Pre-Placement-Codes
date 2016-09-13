@@ -38,13 +38,13 @@ CleanData <- function( Data, WeatherArg) {
                            "Wind_SpeedKm_h",
                            "Events",
                            "WindDirDegrees"))) {
-    stop("Error: invalid argument WeatherArg")
+    stop("Invalid argument WeatherArg")
   }
   if (length(WeatherArg) != 2) {
-    stop("Error: invalid length of WeatherArg")
+    stop("Invalid length of WeatherArg")
   }
   if (!is.data.frame(Data)) {
-    stop("Error: Data is not data frame")
+    stop("Data is not data frame")
   }
   if (!all(colnames(Data) %in% c("Time", 
                              "TemperatureC", 
@@ -60,7 +60,7 @@ CleanData <- function( Data, WeatherArg) {
              "Wind_SpeedKm_h",
              "Events",
              "WindDirDegrees") %in% colnames(Data))) {
-    stop("Error: invalid Data")
+    stop("Invalid Data")
   }
   
   MyCleanData <- Data[ , WeatherArg]
@@ -104,10 +104,10 @@ WeatherAverages <- function( City, WeatherArg, TimeDif = date, Average = mean) {
   #Error checks
   #We can use error checks in CleanData to check City and WeatherArg are valid
   if (!(c(TimeDif) %in% c(date, week, month))) {
-    stop("Error: invalid argument TimeDif")
+    stop("Invalid argument TimeDif")
   }
   if (!(c(Average) %in% c(mean, median))) {
-    stop("Error: invalid argument Average")
+    stop("Invalid argument Average")
   }
   
   MyData <- CleanData( City, WeatherArg)
