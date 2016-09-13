@@ -29,6 +29,40 @@ CleanData <- function( Data, WeatherArg) {
   # Remove NAs and uneccessary values
   # Args: Data = a data frame or data table to be cleaned
   #       WeatherArg = Vector indicating the columns of the data to be cleaned
+  
+  #Error checks
+  if (!all(WeatherArg %in% c("Time", 
+                           "TemperatureC", 
+                           "Humidity", 
+                           "Sea_Level_PressurehPa",
+                           "Wind_SpeedKm_h",
+                           "Events",
+                           "WindDirDegrees"))) {
+    stop("Error: invalid argument WeatherArg")
+  }
+  if (length(WeatherArg) != 2) {
+    stop("Error: invalid length of WeatherArg")
+  }
+  if (!is.data.frame(Data)) {
+    stop("Error: Data is not data frame")
+  }
+  if (!all(colnames(Data) %in% c("Time", 
+                             "TemperatureC", 
+                             "Humidity", 
+                             "Sea_Level_PressurehPa",
+                             "Wind_SpeedKm_h",
+                             "Events",
+                             "WindDirDegrees")) && 
+      !all(c("Time", 
+             "TemperatureC", 
+             "Humidity", 
+             "Sea_Level_PressurehPa",
+             "Wind_SpeedKm_h",
+             "Events",
+             "WindDirDegrees") %in% colnames(Data))) {
+    stop("Error: invalid Data")
+  }
+  
   MyCleanData <- Data[ , WeatherArg]
   if ( WeatherArg[ 2] == "TemperatureC") {
     MyCleanData <- MyCleanData[ !is.na( MyCleanData$Temperature), ]
@@ -66,6 +100,16 @@ WeatherAverages <- function( City, WeatherArg, TimeDif = date, Average = mean) {
   #       WeatherArg = vector length 2 with first arguement "Time"
   #       TimeDif = function: either date, week or month
   #       Average = chosen function to calculate averages
+  
+  #Error checks
+  #We can use error checks in CleanData to check City and WeatherArg are valid
+  if (!(c(TimeDif) %in% c(date, week, month))) {
+    stop("Error: invalid argument TimeDif")
+  }
+  if (!(c(Average) %in% c(mean, median))) {
+    stop("Error: invalid argument Average")
+  }
+  
   MyData <- CleanData( City, WeatherArg)
   MyData2 <- MyData[ , WeatherArg]
   if ( identical( TimeDif, date)) {
