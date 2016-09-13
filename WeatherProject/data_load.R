@@ -11,14 +11,14 @@ setwd("~/R/WeatherProject/WeatherProject/")
 #Heathrow2 <- Heathrow1[c("Time", "TemperatureC", "Humidity", "Sea_Level_PressurehPa", "Wind_SpeedKm_h", "Events", "WindDirDegrees")]
 #write.table(Heathrow2, file = "Processed/rowDataH.tsv", sep = "\t", row.names = F)
 
-Heathrow <- read.table( "Processed/rowDataH.tsv", sep="\t", header = T, stringsAsFactors = F) #heathrow weather data
-Heathrow$Time <- as.POSIXct( Heathrow$Time)
-
-
-#initial download from WeatherData
 #Dundee1 <- getWeatherForDate("EGPN", "2014-01-01", end_date="2016-08-30",opt_all_columns = T, opt_detailed = T)
 #Dundee2 <- Dundee1[c("Time", "TemperatureC", "Humidity", "Sea_Level_PressurehPa", "Wind_SpeedKm_h", "Events", "WindDirDegrees")]
 #write.table(Dundee2, file = "Processed/rowDataD.tsv", sep = "\t", row.names = F)
+
+
+#Read data from file
+Heathrow <- read.table( "Processed/rowDataH.tsv", sep="\t", header = T, stringsAsFactors = F) #heathrow weather data
+Heathrow$Time <- as.POSIXct( Heathrow$Time)
 
 Dundee <- read.table( "Processed/rowDataD.tsv", sep="\t", header = T, stringsAsFactors = F) #dundee weather data
 Dundee$Time <- as.POSIXct( Dundee$Time)
