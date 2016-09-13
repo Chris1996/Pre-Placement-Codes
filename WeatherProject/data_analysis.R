@@ -7,9 +7,9 @@ setwd("~/R/WeatherProject/WeatherProject/")
 
 
 
-#Creates plots and calculates chosen values
+# Creates plots and calculates chosen values
 
-#Visualize day/week/month mean and median temperature in Heathrow and Dundee
+# Visualize day/week/month mean and median temperature in Heathrow and Dundee
 lhr.dun.daily.temp.mean <- VisualizeAverages( heathrow, 
                                               dundee, 
                                               c("Time", "TemperatureC"))
