@@ -19,15 +19,15 @@ WeatherAverages(df, c("Time", "TemperatureC"))
 #############################################################################
 
 set.seed(50)
-HeathrowTest <- Heathrow[sample(1:69517, 100), ]
-DundeeTest <- Dundee[sample(1:25387, 100), ]
-test1 <- CleanData( HeathrowTest, c("Time", "TemperatureC"))
-test2 <- CleanData( HeathrowTest, c("Events", "Humidity"))
-test3 <- CleanData( HeathrowTest, rev(c("Events", "Humidity")))
-test4 <- WeatherAverages( HeathrowTest, c("Time", "TemperatureC"))
-test5 <- WeatherAverages( HeathrowTest, c("Time", "Humidity"))
-test6 <- CleanData( DundeeTest, c("TemperatureC", "Sea_Level_PressurehPa"))
-test7 <- WeatherAverages( DundeeTest, c("Time", "Wind_SpeedKm_h"))
-test8 <- VisualizeAverages( HeathrowTest, DundeeTest, c("Time", "TemperatureC"))
+heathrow.test <- heathrow[sample(1:69517, 100), ]
+dundee.test <- dundee[sample(1:25387, 100), ]
+test1 <- CleanData( heathrow.test, c("Time", "TemperatureC"))
+test2 <- CleanData( heathrow.test, c("Events", "Humidity"))
+test3 <- CleanData( heathrow.test, rev(c("Events", "Humidity")))
+test4 <- WeatherAverages( heathrow.test, c("Time", "TemperatureC"))
+test5 <- WeatherAverages( heathrow.test, c("Time", "Humidity"))
+test6 <- CleanData( dundee.test, c("TemperatureC", "Sea_Level_PressurehPa"))
+test7 <- WeatherAverages( dundee.test, c("Time", "Wind_SpeedKm_h"))
+test8 <- VisualizeAverages( heathrow.test, dundee.test, c("Time", "TemperatureC"))
 
 

@@ -7,21 +7,21 @@ setwd("~/R/WeatherProject/WeatherProject/")
 
 
 #initial download from WeatherData
-#Heathrow1 <- getWeatherForDate("EGLL", "2014-01-01", end_date="2016-08-30",opt_all_columns = T, opt_detailed = T)
-#Heathrow2 <- Heathrow1[c("Time", "TemperatureC", "Humidity", "Sea_Level_PressurehPa", "Wind_SpeedKm_h", "Events", "WindDirDegrees")]
-#write.table(Heathrow2, file = "Processed/rowDataH.tsv", sep = "\t", row.names = F)
+#heathrow.download <- getWeatherForDate("EGLL", "2014-01-01", end_date="2016-08-30",opt_all_columns = T, opt_detailed = T)
+#heathrow.download2 <- heathrow.download[c("Time", "TemperatureC", "Humidity", "Sea_Level_PressurehPa", "Wind_SpeedKm_h", "Events", "WindDirDegrees")]
+#write.table(heathrow.download2, file = "Processed/rowDataH.tsv", sep = "\t", row.names = F)
 
-#Dundee1 <- getWeatherForDate("EGPN", "2014-01-01", end_date="2016-08-30",opt_all_columns = T, opt_detailed = T)
-#Dundee2 <- Dundee1[c("Time", "TemperatureC", "Humidity", "Sea_Level_PressurehPa", "Wind_SpeedKm_h", "Events", "WindDirDegrees")]
-#write.table(Dundee2, file = "Processed/rowDataD.tsv", sep = "\t", row.names = F)
+#dundee.download <- getWeatherForDate("EGPN", "2014-01-01", end_date="2016-08-30",opt_all_columns = T, opt_detailed = T)
+#dundee.download2 <- dundee.download[c("Time", "TemperatureC", "Humidity", "Sea_Level_PressurehPa", "Wind_SpeedKm_h", "Events", "WindDirDegrees")]
+#write.table(dundee.download2, file = "Processed/rowDataD.tsv", sep = "\t", row.names = F)
 
 
 #Read data from file
-Heathrow <- read.table( "Processed/rowDataH.tsv", sep="\t", header = T, stringsAsFactors = F) #heathrow weather data
-Heathrow$Time <- as.POSIXct( Heathrow$Time)
+heathrow <- read.table( "Processed/rowDataH.tsv", sep="\t", header = T, stringsAsFactors = F) #heathrow weather data
+heathrow$Time <- as.POSIXct( heathrow$Time)
 
-Dundee <- read.table( "Processed/rowDataD.tsv", sep="\t", header = T, stringsAsFactors = F) #dundee weather data
-Dundee$Time <- as.POSIXct( Dundee$Time)
+dundee <- read.table( "Processed/rowDataD.tsv", sep="\t", header = T, stringsAsFactors = F) #dundee weather data
+dundee$Time <- as.POSIXct( dundee$Time)
 
 
 #load functions
@@ -159,9 +159,9 @@ VisualizeRelationshipsBoxplot <- function( City, WeatherArg, Rain = F, Colour = 
   MyData <- CleanData( City, WeatherArg)
   MyData <- CleanData( MyData, rev(WeatherArg))
   if ( Rain == T) {
-    if ( identical( City, Heathrow)) {
+    if ( identical( City, heathrow)) {
       levels( MyData$Events) <- c( "No Rain", "No Rain", "Rain", "Rain", "Rain", "Rain", "Rain")
-    } else if ( identical( City, Dundee)) {
+    } else if ( identical( City, dundee)) {
       levels( MyData$Events) <- c( "No Rain", "No Rain", "Rain", "Rain", "Rain", "Rain", "Rain", "Rain", "Rain")
     }
   }

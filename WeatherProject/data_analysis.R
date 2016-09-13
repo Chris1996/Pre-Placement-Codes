@@ -10,33 +10,33 @@ setwd("~/R/WeatherProject/WeatherProject/")
 #Creates plots and calculates chosen values
 
 #Visualize day/week/month mean and median temperature in Heathrow and Dundee
-lhr.dun.daily.temp.mean <- VisualizeAverages( Heathrow, 
-                                              Dundee, 
+lhr.dun.daily.temp.mean <- VisualizeAverages( heathrow, 
+                                              dundee, 
                                               c("Time", "TemperatureC"))
 
-lhr.dun.weekly.temp.mean <- VisualizeAverages( Heathrow, 
-                                               Dundee, 
+lhr.dun.weekly.temp.mean <- VisualizeAverages( heathrow, 
+                                               dundee, 
                                                c("Time", "TemperatureC"), 
                                                TimeDif = week)
 
-lhr.dun.monthly.temp.mean <- VisualizeAverages( Heathrow, 
-                                                Dundee, 
+lhr.dun.monthly.temp.mean <- VisualizeAverages( heathrow, 
+                                                dundee, 
                                                 c("Time", "TemperatureC"), 
                                                 TimeDif = month)
 
-lhr.dun.daily.temp.median <- VisualizeAverages( Heathrow, 
-                                                Dundee, 
+lhr.dun.daily.temp.median <- VisualizeAverages( heathrow, 
+                                                dundee, 
                                                 c("Time", "TemperatureC"), 
                                                 Average = median)
 
-lhr.dun.weekly.temp.median <- VisualizeAverages( Heathrow, 
-                                                 Dundee, 
+lhr.dun.weekly.temp.median <- VisualizeAverages( heathrow, 
+                                                 dundee, 
                                                  c("Time", "TemperatureC"), 
                                                  TimeDif = week, 
                                                  Average = median)
 
-lhr.dun.monthly.temp.median <- VisualizeAverages( Heathrow, 
-                                                  Dundee, 
+lhr.dun.monthly.temp.median <- VisualizeAverages( heathrow, 
+                                                  dundee, 
                                                   c("Time", "TemperatureC"), 
                                                   TimeDif = month, 
                                                   Average = median)
@@ -44,47 +44,47 @@ lhr.dun.monthly.temp.median <- VisualizeAverages( Heathrow,
 
 #Calculate and visualize whether the daily means of each weather varible are
 #correlated in Heathrow and Dundee
-temp.correlation <- CorrelatedValues( Heathrow, Dundee, c("Time", "TemperatureC"))
+temp.correlation <- CorrelatedValues( heathrow, dundee, c("Time", "TemperatureC"))
 
-pressure.correlation <- CorrelatedValues( Heathrow, 
-                                          Dundee, 
+pressure.correlation <- CorrelatedValues( heathrow, 
+                                          dundee, 
                                           c("Time", "Sea_Level_PressurehPa"))
-visual.pressure.cor <- VisualizeAverages( Heathrow, 
-                                          Dundee, 
+visual.pressure.cor <- VisualizeAverages( heathrow, 
+                                          dundee, 
                                           c("Time", "Sea_Level_PressurehPa"))
 
-humidity.correlation <- CorrelatedValues( Heathrow, 
-                                          Dundee, 
+humidity.correlation <- CorrelatedValues( heathrow, 
+                                          dundee, 
                                           c("Time", "Humidity"))
-visual.humidity.cor <- VisualizeAverages( Heathrow, 
-                                          Dundee, 
+visual.humidity.cor <- VisualizeAverages( heathrow, 
+                                          dundee, 
                                           c("Time", "Humidity"))
 
-wind.speed.correlation <- CorrelatedValues( Heathrow, 
-                                            Dundee, 
+wind.speed.correlation <- CorrelatedValues( heathrow, 
+                                            dundee, 
                                             c("Time", "Wind_SpeedKm_h"))
-visual.ws.cor <- VisualizeAverages( Heathrow, Dundee, c("Time", "Wind_SpeedKm_h"))
+visual.ws.cor <- VisualizeAverages( heathrow, dundee, c("Time", "Wind_SpeedKm_h"))
 
 
 #Visualize weather pressure is correlated with weather events in Heathrow
 #and Dundee
-lhr.events.pressure <- VisualizeRelationshipsBoxplot( Heathrow, 
+lhr.events.pressure <- VisualizeRelationshipsBoxplot( heathrow, 
                                                       c("Events", "Sea_Level_PressurehPa"))
-lhr.rain.pressure <- VisualizeRelationshipsBoxplot( Heathrow, 
+lhr.rain.pressure <- VisualizeRelationshipsBoxplot( heathrow, 
                                                     c("Events", "Sea_Level_PressurehPa"), 
                                                     Rain = T)
 
-dun.events.pressure <- VisualizeRelationshipsBoxplot( Dundee, 
+dun.events.pressure <- VisualizeRelationshipsBoxplot( dundee, 
                                                       c("Events", "Sea_Level_PressurehPa"))
-dun.rain.pressure <- VisualizeRelationshipsBoxplot( Dundee, 
+dun.rain.pressure <- VisualizeRelationshipsBoxplot( dundee, 
                                                     c("Events", "Sea_Level_PressurehPa"), 
                                                     Rain = T)
 
 #Visualize how Wind Direction is related to Temperature change in Heathrow
 #and Dundee
-lhr.wind.dir.temp <- VisualizePolar( Heathrow, TempRange = c(9, 14))
+lhr.wind.dir.temp <- VisualizePolar( heathrow, TempRange = c(9, 14))
 
-dun.wind.dir.temp <- VisualizePolar( Dundee, TempRange = c(6, 13))
+dun.wind.dir.temp <- VisualizePolar( dundee, TempRange = c(6, 13))
 
 
 
