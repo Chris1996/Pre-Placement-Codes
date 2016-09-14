@@ -1,10 +1,9 @@
-#data analysis script
+# Data analysis script
 
 library(weatherData)
 library(ggplot2)
 library(lubridate)
 setwd("~/R/WeatherProject/WeatherProject/")
-
 
 
 # Creates plots and calculates chosen values
@@ -100,7 +99,6 @@ correlated.results <- data.frame(name,value)
 #already written the file, don't want to keep overwriting
 #write.table(correlated.results, file = "Results/correlated_results.tsv", sep = "\t", row.names = F)
                                  
-
 
 
 

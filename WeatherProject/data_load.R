@@ -1,4 +1,4 @@
-# data loading script
+# Data loading script
 
 library(weatherData)
 library(ggplot2)
@@ -6,17 +6,17 @@ library(lubridate)
 setwd("~/R/WeatherProject/WeatherProject/")
 
 
-#initial download from WeatherData
-#heathrow.download <- getWeatherForDate("EGLL", "2014-01-01", end_date="2016-08-30",opt_all_columns = T, opt_detailed = T)
-#heathrow.download2 <- heathrow.download[c("Time", "TemperatureC", "Humidity", "Sea_Level_PressurehPa", "Wind_SpeedKm_h", "Events", "WindDirDegrees")]
-#write.table(heathrow.download2, file = "Processed/rowDataH.tsv", sep = "\t", row.names = F)
+# Initial download from WeatherData
+# heathrow.download <- getWeatherForDate("EGLL", "2014-01-01", end_date="2016-08-30",opt_all_columns = T, opt_detailed = T)
+# heathrow.download2 <- heathrow.download[c("Time", "TemperatureC", "Humidity", "Sea_Level_PressurehPa", "Wind_SpeedKm_h", "Events", "WindDirDegrees")]
+# write.table(heathrow.download2, file = "Processed/rowDataH.tsv", sep = "\t", row.names = F)
+# 
+# dundee.download <- getWeatherForDate("EGPN", "2014-01-01", end_date="2016-08-30",opt_all_columns = T, opt_detailed = T)
+# dundee.download2 <- dundee.download[c("Time", "TemperatureC", "Humidity", "Sea_Level_PressurehPa", "Wind_SpeedKm_h", "Events", "WindDirDegrees")]
+# write.table(dundee.download2, file = "Processed/rowDataD.tsv", sep = "\t", row.names = F)
 
-#dundee.download <- getWeatherForDate("EGPN", "2014-01-01", end_date="2016-08-30",opt_all_columns = T, opt_detailed = T)
-#dundee.download2 <- dundee.download[c("Time", "TemperatureC", "Humidity", "Sea_Level_PressurehPa", "Wind_SpeedKm_h", "Events", "WindDirDegrees")]
-#write.table(dundee.download2, file = "Processed/rowDataD.tsv", sep = "\t", row.names = F)
 
-
-#Read data from file
+# Read data from file
 heathrow <- read.table( "Processed/rowDataH.tsv", sep="\t", header = T, stringsAsFactors = F) #heathrow weather data
 heathrow$Time <- as.POSIXct( heathrow$Time)
 
@@ -24,13 +24,13 @@ dundee <- read.table( "Processed/rowDataD.tsv", sep="\t", header = T, stringsAsF
 dundee$Time <- as.POSIXct( dundee$Time)
 
 
-#load functions
+# Load functions
 CleanData <- function( Data, WeatherArg) {
   # Remove NAs and uneccessary values
   # Args: Data = a data frame or data table to be cleaned
   #       WeatherArg = Vector indicating the columns of the data to be cleaned
   
-  #Error checks
+  # Error checks
   if (!all(WeatherArg %in% c("Time", 
                            "TemperatureC", 
                            "Humidity", 
@@ -101,8 +101,8 @@ WeatherAverages <- function( City, WeatherArg, TimeDif = date, Average = mean) {
   #       TimeDif = function: either date, week or month
   #       Average = chosen function to calculate averages
   
-  #Error checks
-  #We can use error checks in CleanData to check City and WeatherArg are valid
+  # Error checks
+  # We can use error checks in CleanData to check City and WeatherArg are valid
   if (!(c(TimeDif) %in% c(date, week, month))) {
     stop("Invalid argument TimeDif")
   }
@@ -154,8 +154,8 @@ CorrelatedValues <- function( City1, City2, WeatherArg) {
 } 
 
 VisualizeRelationshipsBoxplot <- function( City, WeatherArg, Rain = F, Colour = "Blues") {
-  # Gives a graphical representation of the relationship between 2 weather variables...
-  # ...in the given City
+  # Gives a graphical representation of the relationship between 2 weather variables
+  # in the given City
   MyData <- CleanData( City, WeatherArg)
   MyData <- CleanData( MyData, rev(WeatherArg))
   if ( Rain == T) {
@@ -174,8 +174,8 @@ VisualizeRelationshipsBoxplot <- function( City, WeatherArg, Rain = F, Colour = 
 }
 
 VisualizeRelationshipsScatter <- function( City, WeatherArg) {
-  # Gives a graphical representation of the relationship between 2 weather variables...
-  # ...in the given City
+  # Gives a graphical representation of the relationship between 2 weather variables
+  # in the given City
   MyData <- CleanData( ReadData( City), WeatherArg)
   MyData <- CleanData( MyData, rev(WeatherArg))
   ggplot( data = MyData, na.rm = T) +
@@ -185,6 +185,8 @@ VisualizeRelationshipsScatter <- function( City, WeatherArg) {
 } 
 
 VisualizePolar <- function( City, TempRange = c( 0, 15)) {
+  # Produces a 360 degree plot showing how wind direction is related to temperature 
+  # change in the given city
   MyData <- CleanData( City, c( "WindDirDegrees", "TemperatureC"))
   MyData <- CleanData( MyData, rev(c( "WindDirDegrees", "TemperatureC")))
   MyMeanData <- aggregate( MyData, by = MyData[ "WindDirDegrees"], FUN = mean)
