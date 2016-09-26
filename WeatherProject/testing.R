@@ -1,3 +1,6 @@
+source("functions.R")
+
+#############################################################################
 # Test script
 
 # Show the different errors for invalid inputs
