@@ -160,5 +160,39 @@ ggplot( data = MyData2, na.rm = T, aes(x = Pressure)) +
 
 
 
+# Analysing the double peak in heathrow fog vs pressure
+temp <- heathrow[, c("Time", "Pressure", "Events")]
+temp <- temp[ temp$Events == "Fog", ]
+temp <- temp[ !is.na(temp$Events),]
+temp$Time <- hour( temp$Time)
+
+ggplot(data = temp, aes(x = Time)) +
+  geom_histogram(binwidth = 1) +
+  ggtitle("Fog occurences in each hour of the day") +
+  xlab("Hours of the day")
+
+
+temp2 <- CleanData(heathrow, c("Time", "Pressure"))
+temp2$Time <- hour( temp2$Time)
+
+ggplot(data = temp2, aes(x = Time)) +
+  geom_histogram(binwidth = 1) +
+  ggtitle("Number of pressure readings in each hour of the day") +
+  xlab("Hours of the day") +
+  coord_cartesian(ylim = c(2800,3000))
+
+temp3 <- aggregate(temp2, by = temp2["Time"], mean)
+
+ggplot(data = temp3, aes(x = Time, y = Pressure)) +
+  geom_line() +
+  ggtitle("Average Pressure by time of day") +
+  xlab("Hours of the day") 
+
+
+
+
+
+
+
 
                                  
